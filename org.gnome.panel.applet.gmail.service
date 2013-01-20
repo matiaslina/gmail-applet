@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.gnome.applet.gmail.panel-applet
+Exec=/usr/lib/gnome-applets/gmail-factory.py
