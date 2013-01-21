@@ -7,7 +7,7 @@ import gi
 
 from gmailApplet import applet_factory
 
-if __name__= '__main__': # Testing for execution
+if __name__== '__main__': # Testing for execution
 	print('starting factory')
 	PanelApplet.Applet.factory_main("gmailFactory",
 					PanelApplet.Applet.__gtype__,
