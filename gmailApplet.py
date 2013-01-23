@@ -1,16 +1,18 @@
 import sys
 import os
+import appletmanagers 
 
-import gi
 from gi.repository import Gtk, Gdk
 from gi.repository import PanelApplet
+#cm = ConnectionManager()
+#am = AccountManager()
 
-from managers import ConnectionManager, AccountManager
-
-cm = ConnectionManager()
-am = AccountManager()
 
 class GmailApplet:
+
+	NEW_EMAIL_ICON_PATH 	= "/usr/share/pixmaps/gmail-applet/new-email.svg"
+	NO_EMAIL_ICON_PATH 	= "/usr/share/pixmaps/gmail-applet/no-email.svg"
+	NO_CONNECTION_ICON_PATH = "/usr/share/pixmaps/gmail-applet/no-connection.svg"
 
 	HAVE_ICON = False
 
@@ -38,7 +40,10 @@ class GmailApplet:
 
 		try:
 			self.icon = Gtk.Image()
-			self.icon.set_from_file("/usr/share/pixmaps/gmail-applet/new-email.svg")
+			if self.connected:
+				self.icon.set_from_file(self.NO_EMAIL_ICON_PATH)
+			else:
+				self.icon.set_from_file(self.NO_CONNECTION_ICON_PATH)
 			
 			self.event_box.add(self.icon)
 			self.HAVE_ICON = True
