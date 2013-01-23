@@ -9,7 +9,7 @@ class ConnectionManager:
 		self.inbox 	= None 
 		print("Connection manager running")
 
-	def connect_to_server(self, username, password ):
+	def connect(self, username, password ):
 		try:
 			self.imap_server = imaplib.IMAP4_SSL("imap.gmail.com",993)
 			self.imap_server.login(username, password)
@@ -20,6 +20,10 @@ class ConnectionManager:
 
 		self.connected = True
 		return True
+
+	def disconnect(self):
+		if self.connected:
+			imap.logout()
 
 	def select_inbox(self, inbox=None):
 		self.inbox = inbox
