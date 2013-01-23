@@ -47,13 +47,9 @@ class GmailApplet:
 			# Trying to put the icon in the applet
 			self.icon = Gtk.Image()
 			if self.connected:
-				print ("It's connected")
-				print ("Trying to get " + self.NO_EMAIL_ICON_PATH)
 				self.icon.set_from_file(self.NO_EMAIL_ICON_PATH)
 			else:
-				print ("It's not connected")
-				print ("Trying to get " + self.NEW_EMAIL_ICON_PATH)
-				self.icon.set_from_file(self.NEW_EMAIL_ICON_PATH)
+				self.icon.set_from_file(self.NO_CONNECTION_ICON_PATH)
 			
 			self.event_box.add(self.icon)
 			self.HAVE_ICON = True
