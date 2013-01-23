@@ -26,7 +26,7 @@ class ConnectionManager:
 		self.imap_server.select( inbox )
 
 	def check_unread_emails(self):
-		status, response = imap_server.status(self.inbox, "(UNSEEN)")
+		status, response = self.imap_server.status(self.inbox, "(UNSEEN)")
 
 		# Get the count of unread emails.
 		unread_emails = int(response[0].split()[2].strip(').,]'))
