@@ -1,5 +1,6 @@
+
 import imaplib
-import pynotify
+import notify2 as pynotify
 
 import os
 from os.path import expanduser, isdir, isfile
@@ -71,7 +72,7 @@ class AccountManager:
 
 	def __init__(self):
 		print("Account manager running")
-		if not isfile(self.CONFIG_FOLDER):
+		if not isdir(self.CONFIG_FOLDER):
 			os.mkdir(self.CONFIG_FOLDER)
 	
 	def is_user_registered(self):
@@ -99,6 +100,3 @@ class AccountManager:
 			return False
 
 		return True
-
-if __name__ == '__main__':
-	pass

@@ -1,13 +1,16 @@
 import sys
 import os
-import appletmanagers 
 
-from gi.repository import Gtk, Gdk
+import gi
+from gi.repository import Gtk
+from gi.repository import Gdk
 from gi.repository import PanelApplet
-#cm = ConnectionManager()
-#am = AccountManager()
 
+from managers import AccountManager, ConnectionManager
 
+am = AccountManager()
+cm = ConnectionManager()
+		
 class GmailApplet:
 
 	NEW_EMAIL_ICON_PATH 	= "/usr/share/pixmaps/gmail-applet/new-email.svg"
@@ -48,12 +51,9 @@ class GmailApplet:
 			self.event_box.add(self.icon)
 			self.HAVE_ICON = True
 		except:
-			self.button.set_label("Gmail")
+			print("There's no icon :/")
 		
-		try:
-			self.event_box.set_visible_window(False)
-		except:
-			print("unknow lala")
+		self.event_box.set_visible_window(False)
 		self.event_box.connect("button_press_event", self.on_eb_press)
 		self.box.pack_start(self.event_box, False, False, 0)
 
