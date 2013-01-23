@@ -37,5 +37,27 @@ class ConnectionManager:
 
 		return unread_emails
 
+class AccountManager:
+	
+	self.KEYRING_ID = 'gmail_applet'
+
+	def __init__(self):
+		print("Account manager running")
+
+	def get_password_from_username(self, username):
+		return keyring.get_password(self.KEYRING_ID, username)
+
+	def save_password(self, username, password):
+		keyring.set_password(self.KEYRING_ID, username, password)
+	
+	def delete_username(self, username):
+		try:
+			keyring.delete_password(self.KEYRING_ID, username)
+		except:
+			print("The username/password doesn't exist")
+			return False
+
+		return True
+
 if __name__ == '__main__':
 	pass
