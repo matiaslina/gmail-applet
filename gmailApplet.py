@@ -5,19 +5,37 @@ import gi
 from gi.repository import Gtk, Gdk
 from gi.repository import PanelApplet
 
+from managers import ConnectionManager, AccountManager
+
+cm = ConnectionManager()
+am = AccountManager()
+
 class GmailApplet:
 
 	HAVE_ICON = False
+
+	can_connect = False
 
 	main_menu_xml = """<menuitem name='Accounts' action='Accounts'/>"""
 
 	def __init__(self, applet):
 		self.applet = applet
+		
+		is_registered, username = am.is_user_registered()
+		if is_registered:
+			self.can_connect = True 
+			
+			connected = cm.connect(username, am.get_password_from_username( username ) )
+			if connected:
+				self.connected = True
+
+		self.create_widgets()
+
+	def create_widgets(self):
 
 		self.box	= Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 		self.event_box	= Gtk.EventBox() 
 
-	def create_widgets(self):
 		try:
 			self.icon = Gtk.Image()
 			self.icon.set_from_file("/usr/share/pixmaps/gmail-applet/new-email.svg")
@@ -72,12 +90,48 @@ class GmailApplet:
 		return False
 	
 	def show_account_dialog(self):
-		print("There's no account dialog yet")
+		print("Opening the dialog")
+		
+		dialog = NewAccountDialog()
+		response = dialog.run()
+
+		if response == Gtk.ResponseType.OK:
+			print ("The OK Button it's clicked")
+		elif response == Gtk.ResponseType.CANCEL:
+			print ("The Cancel button it's clicked")
+
+		dialog.destroy()
+
 		return True
 	
 	def check_gmail_on_browser( self, widget, event ):
 		print("Gona open firefox")
 		return True
+
+class NewAccountDialog(Gtk.Dialog):
+	def __init__(self,parent=None):
+		Gtk.Dialog.__init__(self,"New Account", parent, 0,
+				(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+				 Gtk.STOCK_OK, Gtk.ResponseType.OK))
+
+		self.set_default_size(200,150)
+		
+		self.email_label = Gtk.Label("Email:")
+		self.email_entry = Gtk.Entry()
+
+		self.password_label = Gtk.Label("Password:")
+		self.password_entry = Gtk.Entry()
+		self.password_entry.set_visibility(False)
+
+		box = self.get_content_area()
+		
+		# Add everything to the dialog
+		box.add(self.email_label)
+		box.add(self.email_entry)
+		box.add(self.password_label)
+		box.add(self.password_entry)
+		
+		self.show_all()
 
 ''' Entry point '''
 def applet_factory ( applet, iid, data = None):
