@@ -20,6 +20,7 @@ class GmailApplet:
 	HAVE_ICON = False
 
 	can_connect = False
+	connected   = False
 
 	main_menu_xml = """<menuitem name='Accounts' action='Accounts'/>"""
 
@@ -27,26 +28,32 @@ class GmailApplet:
 		self.applet = applet
 		
 		is_registered, username = am.is_user_registered()
+		print(is_registered)
 		if is_registered:
 			self.can_connect = True 
 			
-			connected = cm.connect(username, am.get_password_from_username( username ) )
-			if connected:
+			successful_connection = cm.connect(username, am.get_password_from_username( username ) )
+			if successful_connection:
 				self.connected = True
 
 		self.create_widgets()
 
 	def create_widgets(self):
-
+		print("About to create the widgets")
 		self.box	= Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 		self.event_box	= Gtk.EventBox() 
 
 		try:
+			# Trying to put the icon in the applet
 			self.icon = Gtk.Image()
 			if self.connected:
+				print ("It's connected")
+				print ("Trying to get " + self.NO_EMAIL_ICON_PATH)
 				self.icon.set_from_file(self.NO_EMAIL_ICON_PATH)
 			else:
-				self.icon.set_from_file(self.NO_CONNECTION_ICON_PATH)
+				print ("It's not connected")
+				print ("Trying to get " + self.NEW_EMAIL_ICON_PATH)
+				self.icon.set_from_file(self.NEW_EMAIL_ICON_PATH)
 			
 			self.event_box.add(self.icon)
 			self.HAVE_ICON = True
@@ -144,6 +151,5 @@ def applet_factory ( applet, iid, data = None):
 		return False
 	
 	gmail = GmailApplet( applet )
-	gmail.create_widgets()
 
 	return True
