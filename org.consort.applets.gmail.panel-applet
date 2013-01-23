@@ -1,6 +1,6 @@
 [Applet Factory]
 Id=gmailFactory
-Location=/usr/lib/gnome-applets/gmail-factory.py
+Location=/home/matias/workspace/gmail-applet/gmail-factory.py
 Name=gmail Factory
 
 [gmail]
