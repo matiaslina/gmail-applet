@@ -4,12 +4,14 @@ import os
 import gi
 from gi.repository import Gtk
 from gi.repository import Gdk
+from gi.repository import GObject
 from gi.repository import PanelApplet
 
-from managers import AccountManager, ConnectionManager
+import managers 
 
-am = AccountManager()
-cm = ConnectionManager()
+am = managers.AccountManager()
+cm = managers.ConnectionManager()
+config = managers.ConfigManager()
 		
 class GmailApplet:
 
@@ -27,15 +29,10 @@ class GmailApplet:
 	def __init__(self, applet):
 		self.applet = applet
 		
-		is_registered, username = am.is_user_registered()
+		is_registered, username = config.get_email()
 		print(is_registered)
 		if is_registered:
-			self.can_connect = True 
-			
-			successful_connection = cm.connect(username, am.get_password_from_username( username ) )
-			if successful_connection:
-				self.connected = True
-
+			self.connect_to_gmail(username)
 		self.create_widgets()
 
 	def create_widgets(self):
@@ -96,18 +93,41 @@ class GmailApplet:
 			return True
 		print("Event Box clicked")
 		return False
+
+	def connect_to_gmail(self, username):
+		self.can_connect = True 
+		
+		successful_connection = cm.connect(username, am.get_password_from_username( username ) )
+		if successful_connection:
+			self.connected = True
+			GObject.timeout_add(config.get_ping(), self.check_for_new_mails ) 
+
+	def check_for_new_mails(self):
+		if self.connected:
+			print("Idle check")
+			return True
+		return False
 	
 	def show_account_dialog(self):
 		print("Opening the dialog")
+		return True
 		
 		dialog = NewAccountDialog()
 		response = dialog.run()
 
 		if response == Gtk.ResponseType.OK:
 			print ("The OK Button it's clicked")
-		elif response == Gtk.ResponseType.CANCEL:
-			print ("The Cancel button it's clicked")
+			email 	 = dialog.email_entry.get_text()
+			password = dialog.password_entry.get_text()
+			
+			am.register_new_email( email, password )
+			config.set_email( dialog.email_entry.get_text() )
 
+			self.can_connect = True
+			
+			password = None
+		elif response == Gtk.ResponseType.CANCEL:
+			pass
 		dialog.destroy()
 
 		return True
@@ -146,6 +166,8 @@ def applet_factory ( applet, iid, data = None):
 	if iid != "gmail":
 		return False
 	
+	GObject.threads_init()
 	gmail = GmailApplet( applet )
+
 
 	return True
