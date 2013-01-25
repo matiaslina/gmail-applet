@@ -1,3 +1,3 @@
 [D-BUS Service]
-Name=org.gnome.applet.gmail.panel-applet
+Name=org.consort.panel.applet.gmailFactory
 Exec=/home/matias/workspace/gmail-applet/gmail-factory.py
