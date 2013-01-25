@@ -17,7 +17,7 @@ Run `make install` to install it in the system. If you want to remove it, just d
 Debug
 -----
 
-Just before insert the applet into consort panel, run `python /usr/lib/consort-applets/gmail-factory.py`
+Just before insert the applet into consort panel, run `python /usr/share/consort-applets/gmail-applet/gmail-factory.py`
 
 Contact
 =======
