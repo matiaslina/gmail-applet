@@ -4,8 +4,9 @@ Gmail applet
 Requisites
 ----------
 
-sudo apt-get install python-keyring
-PyNotify2 ~> http://pypi.python.org/pypi/notify2
+*sudo apt-get install python-keyring
+
+*PyNotify2 ~> http://pypi.python.org/pypi/notify2
 
 And I think that thats all.
 
