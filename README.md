@@ -1,6 +1,8 @@
 Gmail applet
 ============
 
+It's a gmail applet for Consort that notify for new mails.
+
 Requisites
 ----------
 
