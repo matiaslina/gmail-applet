@@ -28,12 +28,9 @@ class GmailApplet:
 
 	def __init__(self, applet):
 		self.applet = applet
-		
-		is_registered, username = config.get_email()
-		print(is_registered)
-		if is_registered:
-			self.connect_to_gmail(username)
 		self.create_widgets()
+		GObject.timeout_add(config.get_ping(), self.check_for_new_mails ) 
+		
 
 	def create_widgets(self):
 		print("About to create the widgets")
@@ -100,13 +97,21 @@ class GmailApplet:
 		successful_connection = cm.connect(username, am.get_password_from_username( username ) )
 		if successful_connection:
 			self.connected = True
-			GObject.timeout_add(config.get_ping(), self.check_for_new_mails ) 
+			self.icon.set_from_file(self.NO_EMAIL_ICON_PATH)
 
 	def check_for_new_mails(self):
 		if self.connected:
+			# If we're connected, then we check for new emails.
 			print("Idle check")
-			return True
-		return False
+			cm.have_new_emails()
+		else:
+			# If we're not connected, try to connect.
+			is_registered, username = config.get_email()
+			print(is_registered)
+			if is_registered:
+				self.connect_to_gmail(username)
+
+		return True
 	
 	def show_account_dialog(self):
 		print("Opening the dialog")
