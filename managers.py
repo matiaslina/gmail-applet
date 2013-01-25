@@ -29,12 +29,12 @@ class ConnectionManager:
 	def connect(self, username, password ):
 		try:
 			self.imap_server = imaplib.IMAP4_SSL("imap.gmail.com",993)
-			self.imap_server.login(username, password)
 		except:
 			print("Unable to connect to gmail")
 			self.connected = False
 			return False
 
+		self.imap_server.login(username, password)
 		self.connected = True
 		return True
 
@@ -52,19 +52,17 @@ class ConnectionManager:
 
 	def have_new_emails(self):
 		unread_emails = self.check_unread_emails()
+		if unread_emails == 0:
+			return 1
 		if unread_emails > self.last_unread_emails:
 
 			# Notifications
 			notification = pynotify.Notification('Gmail',"You have " + unread_emails.__str__() + " new emails","/usr/share/pixmaps/gmail-applet/new-email.svg")
 			notification.show()
 			self.last_unread_emails = unread_emails
-			return (True, unread_emails)
-		elif unread_emails < self.last_unread_emails:
-			self.last_unread_emails = unread_emails
-			return (False, unread_emails)
+			return 0 
 		else:
-			return (False, self.last_unread_emails)
-		
+			return 0
 
 class AccountManager:
 	
@@ -75,26 +73,6 @@ class AccountManager:
 		if not isdir(CONFIG_FOLDER):
 			os.mkdir(CONFIG_FOLDER)
 	
-	def is_user_registered(self):
-		if isfile(CONFIG_FOLDER + "/accounts"):
-			f = open( CONFIG_FOLDER + "/accounts", 'r')
-			try:
-				account = f.readline()
-				return (True, account)
-			finally:
-				f.close()
-		return (False,'')
-
-	def register_new_email( self, email, password ):
-		try:
-			f = open (CONFIG_FOLDER + "/accounts", 'w')
-			f.write(email)
-		except:
-			print("File " + CONFIG_FOLDER + "/accounts doesn't exists")
-			return False
-		self.save_password( email, password )
-		return True
-
 	################ Keyring methods #######################
 	def get_password_from_username(self, username):
 		return keyring.get_password(self.KEYRING_ID, username)
@@ -116,12 +94,19 @@ class ConfigManager:
 	config_file = CONFIG_FOLDER + "/config.cfg"
 
 	def __init__(self):
-		if not isdir (CONFIG_FOLDER):
-			os.mkdir(CONFIG_FOLDER)
-		
 		# A Config Parser
 		self.config = ConfigParser.RawConfigParser()
-		self.config.read( self.config_file )
+
+		if not isdir (CONFIG_FOLDER):
+			os.mkdir(CONFIG_FOLDER)
+			self.config.add_section('app')
+			self.config.set('app','ping',1000*60*30)
+			self.config.add_section('users','email','')
+			with open( self.config_file,'wb') as f:
+				self.config.write(f)
+
+		else:
+			self.config.read( self.config_file )
 
 	def get_ping(self):
 		return self.config.getint('app','ping')

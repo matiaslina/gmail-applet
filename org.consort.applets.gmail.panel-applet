@@ -1,6 +1,6 @@
 [Applet Factory]
 Id=gmailFactory
-Location=/home/matias/workspace/gmail-applet/gmail-factory.py
+Location=/usr/share/consort-applets/gmail-applet/gmail-factory.py
 Name=gmail Factory
 
 [gmail]
