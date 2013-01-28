@@ -253,7 +253,7 @@ class TimeoutDialog(Gtk.Dialog):
 
 def have_internet_connection():
 	try:
-		response = urllib2.urlopen('http://74.125.224.72',timeout=1)
+		response = urllib2.urlopen(config.get_ip(),timeout=1)
 		return True
 	except urllib2.URLError as err:
 		pass

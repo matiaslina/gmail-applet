@@ -100,10 +100,11 @@ class ConfigManager:
 		if not isdir (CONFIG_FOLDER):
 			os.mkdir(CONFIG_FOLDER)
 			self.config.add_section('app')
-			self.config.set('app','ping',1000*60*30)
-			self.config.add_section('users','email','')
-			with open( self.config_file,'wb') as f:
-				self.config.write(f)
+			self.config.set('app','ping',1000*60*30) # idle timeout
+			self.config.set('app','ip','http://74.125.224.72') # ip to check connection
+			self.config.add_section('users')
+			self.config.set('users','email','')
+			self._save_preferences()
 
 		else:
 			self.config.read( self.config_file )
@@ -111,6 +112,9 @@ class ConfigManager:
 	def get_ping(self):
 		return self.config.getint('app','ping')
 	
+	def get_ip(self):
+		return self.config.get('app','ip')
+
 	def get_email(self):
 		email = self.config.get('users','email')
 		is_registered = (email != '')
@@ -120,11 +124,18 @@ class ConfigManager:
 	def set_ping(self, ping):
 		self.config.set('app','ping',ping)
 
-		with open( self.config_file, 'wb') as f:
-			self.config.write(f)
+		self._save_preferences()
 
 	def set_email(self, email):
 		self.config.set('users','email',email)
+		self._save_preferences()
+		
 
-		with open( self.config_file,'wb') as f:
-			self.config.write(f)
+	def _save_preferences(self):
+		try:
+			with open( self.config_file,'wb') as f:
+				self.config.write(f)
+			return True
+		except:
+			pass
+		return False
